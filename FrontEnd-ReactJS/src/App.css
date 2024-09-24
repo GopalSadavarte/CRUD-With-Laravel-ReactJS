@@ -15,3 +15,11 @@ tr th {
   text-align: center;
   padding: 1rem;
 }
+
+.site-info img {
+  margin: 0 auto;
+}
+
+.authorization {
+  margin: 0 15%;
+}

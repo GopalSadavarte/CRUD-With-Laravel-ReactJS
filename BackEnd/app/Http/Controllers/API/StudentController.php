@@ -63,7 +63,7 @@ class StudentController extends Controller
     {
         $student = Student::find($id);
 
-        if ($student->count() == 1) {
+        if ($student->count() > 0) {
             return response()->json([
                 'status' => true,
                 'data' => $student,

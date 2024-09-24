@@ -4,6 +4,7 @@ import Aside from './Aside'
 export default function StudentDetails () {
   const { stdId } = useParams()
   const [studentInfo, setStudentInfo] = useState({})
+  const [errors, setErrors] = useState([])
   useEffect(() => {
     fetch(`http://localhost:8000/api/student/edit/${stdId}`)
       .then(res => res.json())
@@ -27,7 +28,12 @@ export default function StudentDetails () {
     })
       .then(res => res.json())
       .then(d => {
-        console.log(d)
+        if (d.status) {
+          alert(d.message)
+          setErrors([])
+        } else {
+          setErrors(d.errors)
+        }
       })
   }
 
@@ -61,7 +67,13 @@ export default function StudentDetails () {
                 className='form-control'
                 placeholder='Enter your name..'
               />
-              {/* <small className='text-danger my-2'>{nameError}</small> */}
+              <small className='text-danger my-2'>
+                {errors.map(error => {
+                  if (error.includes('student name')) {
+                    return error
+                  }
+                })}
+              </small>
             </div>
             <div className='form-element'>
               <label htmlFor='addr' className='form-label'>
@@ -81,7 +93,13 @@ export default function StudentDetails () {
                 name='addr'
                 placeholder='Enter your address...'
               />
-              {/* <small className='text-danger my-2'>{addrError}</small> */}
+              <small className='text-danger my-2'>
+                {errors.map(error => {
+                  if (error.split(' ')[1] === 'address') {
+                    return error
+                  }
+                })}
+              </small>
             </div>
             <div className='form-element'>
               <label htmlFor='email' className='form-label'>
@@ -101,7 +119,13 @@ export default function StudentDetails () {
                 value={studentInfo.email}
                 placeholder='Enter your email address...'
               />
-              {/* <small className='text-danger my-2'>{emailError}</small> */}
+              <small className='text-danger my-2'>
+                {errors.map(error => {
+                  if (error.includes('email')) {
+                    return error
+                  }
+                })}
+              </small>
             </div>
             <div className='form-element'>
               <label htmlFor='birthDate' className='form-label'>
@@ -120,7 +144,13 @@ export default function StudentDetails () {
                 }}
                 value={studentInfo.birth_date}
               />
-              {/* <small className='text-danger my-2'>{dateError}</small> */}
+              <small className='text-danger my-2'>
+                {errors.map(error => {
+                  if (error.includes('Age')) {
+                    return error
+                  }
+                })}
+              </small>
             </div>
             <div className='form-element'>
               <label htmlFor='phone' className='form-label'>
@@ -140,7 +170,13 @@ export default function StudentDetails () {
                 value={studentInfo.phone_number}
                 placeholder='Enter phone no..'
               />
-              {/* <small className='text-danger my-2'>{phoneError}</small> */}
+              <small className='text-danger my-2'>
+                {errors.map(error => {
+                  if (error.includes('phone number')) {
+                    return error
+                  }
+                })}
+              </small>
             </div>
             <div className='form-btn my-2 '>
               <button
@@ -148,16 +184,7 @@ export default function StudentDetails () {
                 disabled={Object.keys(studentInfo).length === 0 ? true : false}
                 onClick={updateStudent}
               >
-                Submit
-              </button>
-              <button
-                className='btn btn-warning mx-2'
-                onClick={e => {
-                  e.preventDefault()
-                  document.getElementById('myForm').reset()
-                }}
-              >
-                Cancel
+                Update
               </button>
             </div>
           </form>
