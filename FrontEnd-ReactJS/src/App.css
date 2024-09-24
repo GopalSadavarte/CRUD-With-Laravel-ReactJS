@@ -1,0 +1,17 @@
+li {
+  list-style: none;
+  margin-left: -1.7rem;
+}
+li a {
+  text-decoration: none;
+}
+/* 
+tr th,
+tr td {
+  padding: 1.2rem;
+} */
+
+tr th {
+  text-align: center;
+  padding: 1rem;
+}

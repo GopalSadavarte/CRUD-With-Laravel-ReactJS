@@ -20,7 +20,7 @@ class DateValidation implements ValidationRule
         $old = $newDate->setDate(date('Y') - 18, date('m'), date('d'));
         $date1 = $old->format('Y-m-d');
         if ($value > $date1) {
-            $fail(':attribute is must greater than ' . date('Y-m-d') . ' date ');
+            $fail('Age is minimum have 18 years old!');
         }
     }
 }
