@@ -1,25 +1,36 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import bgImg from '../../images/home-bg.png'
 import { useState } from 'react'
 export default function Signup () {
   const [errors, setErrors] = useState({})
   const [password, setPassword] = useState()
+  const navigate = useNavigate()
   function store (e) {
     e.preventDefault()
     let form = document.getElementById('signup')
     let formData = new FormData(form)
     fetch('http://localhost:8000/api/signup', {
       method: 'post',
-      headers: {},
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      },
       body: formData
     })
       .then(res => res.json())
       .then(d => {
         if (d.status) {
           alert(d.message)
+          navigate('/login')
         } else {
-          console.log(d.errors)
-          setErrors(d.errors)
+          if ('errors' in d) {
+            setErrors({
+              nameError: d.errors.filter(error => error.includes('name')),
+              emailError: d.errors.filter(error => error.includes('email')),
+              passwordError: d.errors.filter(error =>
+                error.includes('password')
+              )
+            })
+          }
         }
       })
   }

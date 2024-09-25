@@ -24,6 +24,11 @@ function Navbar () {
           <li className='mx-2'>
             <Link to={'/register'}>Student Enrollment</Link>
           </li>
+          <li className='mx-2'>
+            <Link to={'/login'} className='text-danger'>
+              signup/login
+            </Link>
+          </li>
         </ul>
       </div>
     </nav>

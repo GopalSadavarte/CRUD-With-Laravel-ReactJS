@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Aside from './Aside'
 
 export default function StudentRegistration () {
+  const token = localStorage.getItem('token')
   const [emailError, setEmailError] = useState()
   const [phoneError, setPhoneError] = useState()
   const [dateError, setDateError] = useState()
@@ -15,12 +16,13 @@ export default function StudentRegistration () {
 
     fetch('http://localhost:8000/api/register', {
       method: 'post',
-      headers: {},
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
       body: formData
     })
       .then(r => r.json())
       .then(d => {
-        console.log(d)
         if ('errors' in d) {
           d.errors.forEach(error => {
             if (error.includes('email')) setEmailError(error)

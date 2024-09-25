@@ -2,9 +2,14 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Aside from './Aside'
 export default function StudentDetails () {
+  const token = localStorage.getItem('token')
   const [studentInfo, setStudentInfo] = useState([])
   function getAllStudent () {
-    fetch('http://localhost:8000/api/student-info')
+    fetch('http://localhost:8000/api/student-info', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
       .then(res => res.json())
       .then(d => {
         setStudentInfo(d.data)
@@ -15,7 +20,11 @@ export default function StudentDetails () {
   }, [])
 
   function removeStudent (id) {
-    fetch(`http://localhost:8000/api/student/delete/${id}`)
+    fetch(`http://localhost:8000/api/student/delete/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
       .then(res => res.json())
       .then(d => {
         if (d.status) {

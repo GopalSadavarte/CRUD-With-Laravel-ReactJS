@@ -3,10 +3,15 @@ import { useParams } from 'react-router-dom'
 import Aside from './Aside'
 export default function StudentDetails () {
   const { stdId } = useParams()
+  const token = localStorage.getItem('token')
   const [studentInfo, setStudentInfo] = useState({})
   const [errors, setErrors] = useState([])
   useEffect(() => {
-    fetch(`http://localhost:8000/api/student/edit/${stdId}`)
+    fetch(`http://localhost:8000/api/student/edit/${stdId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
       .then(res => res.json())
       .then(d => {
         if (d.status) {
@@ -21,9 +26,12 @@ export default function StudentDetails () {
     Object.keys(studentInfo).forEach(key => {
       formData.append(key, studentInfo[key])
     })
+
     fetch(`http://localhost:8000/api/student/update/${stdId}`, {
       method: 'post',
-      headers: {},
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
       body: formData
     })
       .then(res => res.json())
@@ -181,7 +189,7 @@ export default function StudentDetails () {
             <div className='form-btn my-2 '>
               <button
                 className='btn btn-primary'
-                disabled={Object.keys(studentInfo).length === 0 ? true : false}
+                disabled={Object.keys(studentInfo).length === 0}
                 onClick={updateStudent}
               >
                 Update

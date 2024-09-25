@@ -1,5 +1,29 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 export default function Aside () {
+  const navigate = useNavigate()
+  const logout = () => {
+    const token = localStorage.getItem('token')
+    if (token) {
+      fetch('http://localhost:8000/api/logout', {
+        method: 'post',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(res => res.json())
+        .then(d => {
+          if (d.status) {
+            localStorage.removeItem('token')
+            navigate('/login')
+          } else {
+            alert(d.message)
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+  }
   return (
     <aside className='mx-2 rounded'>
       <div className='container-fluid my-1 bg-light mx-2 py-3'>
@@ -25,9 +49,13 @@ export default function Aside () {
                 </Link>
               </li>
               <li className='fs-5 my-2'>
-                <Link to={'#'} className='text-danger'>
+                <a
+                  className='text-danger'
+                  style={{ cursor: 'pointer', userSelect: 'none' }}
+                  onClick={logout}
+                >
                   Logout
-                </Link>
+                </a>
               </li>
             </ul>
           </div>

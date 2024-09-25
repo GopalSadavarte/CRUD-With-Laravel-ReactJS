@@ -1,8 +1,40 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import bgImg from '../../images/Login-02.jpg'
 import googleLogo from '../../images/google.jpg'
 import facebookLogo from '../../images/facebook.jpg'
+import { useState } from 'react'
+
 export default function Login () {
+  const navigate = useNavigate()
+  const [errors, setErrors] = useState({})
+  function store (e) {
+    e.preventDefault()
+    let form = document.getElementById('login')
+    let formData = new FormData(form)
+    fetch('http://localhost:8000/api/login', {
+      method: 'post',
+      headers: {},
+      body: formData
+    })
+      .then(res => res.json())
+      .then(d => {
+        if (d.status) {
+          localStorage.setItem('token', d.token)
+          navigate('/')
+        } else {
+          if ('errors' in d) {
+            setErrors({
+              emailError: d.errors.filter(error => error.includes('email')),
+              passwordError: d.errors.filter(error =>
+                error.includes('password')
+              )
+            })
+          } else {
+            alert(d.message)
+          }
+        }
+      })
+  }
   return (
     <div className='container my-5 d-flex login-container shadow p-3'>
       <div className='login-page w-50 mx-1 p-3 rounded-lg'>
@@ -10,17 +42,19 @@ export default function Login () {
           <h2 className='heading my-3'>Login</h2>
         </div>
         <div className='form-container'>
-          <form id='login'>
+          <form id='login' autoComplete='off'>
             <div className='form-element'>
               <label htmlFor='username' className='form-label'>
                 User Name:
               </label>
               <input
-                type='text'
+                type='email'
                 id='username'
+                name='email'
                 placeholder='Enter your username or email'
                 className='form-control'
               />
+              <small className='text-danger'>{errors.emailError}</small>
             </div>
             <div className='form-element'>
               <label htmlFor='password' className='form-label'>
@@ -29,12 +63,18 @@ export default function Login () {
               <input
                 type='password'
                 id='password'
+                name='password'
                 placeholder='Enter your password'
                 className='form-control'
               />
+              <small className='text-danger'>{errors.passwordError}</small>
             </div>
             <div className='form-btn my-3'>
-              <button className='btn w-100 btn-primary' id='submit'>
+              <button
+                className='btn w-100 btn-primary'
+                id='submit'
+                onClick={store}
+              >
                 Login
               </button>
             </div>
